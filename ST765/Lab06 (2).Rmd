@@ -1,0 +1,36 @@
+---
+title: "Lab06"
+author: "Yifei Liu"
+date: "10/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Task 1: Build tree and make comments
+
+Below you will see the data being loaded, the is_spam column turned into a factor (so the tree uses gini loss function instead of entropy). I decided not to use the pruned/existence of words version because there are no major differences in shape and performance.
+
+The shape of the tree indicates that at each split, the tree is choosing a 'spam' as the criteria and splitting the dataset based on the existence of the 'spam' word. All texts that contain the 'spam' word are categorized as spam and branched to the right, while all the 'safe' texts are branched to the left. This process is repeated until 15 'spam' words have been decided. (Further splits will only result in neglible increase in performance.)
+
+
+```{r}
+library(rpart)
+load("spam.rda")
+all_data <- data.frame(df$is_spam, wordmatrix)
+names(all_data)[1] <- "is_spam"
+
+tree_binary <- rpart(factor(is_spam)~., data=all_data)
+printcp(tree_binary)
+plot(tree_binary)
+```
+
+
+## Task 2: Would this be easier or harder in real life?
+
+I would say that spam prediction would be harder in real life. The spam dataset was gathered in 1999, it's now been 22 years and surely spam messages have developed to be more complex/sophiscated than the primitive examples available in this dataset. 
+
+The non-spam messages also limited to one domain knowledge - Hewlett-Packard office e-mail to be specific. In the real world non-spam emails could revolve around any subject instead of just being limited to HP affairs, this could cause further difficulties in the classification of spam vs nonspam.
